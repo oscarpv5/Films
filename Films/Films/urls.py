@@ -17,6 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from appFilms import endpoint
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('print/JSON1', endpoint.prueba1),
+    path('print/<valor1>/JSON2/<valor2>', endpoint.prueba2),
+    path('print/JSON3/<valor>', endpoint.prueba3),
+    path('print/JSON4/<int:valor>', endpoint.prueba4),
 ]
