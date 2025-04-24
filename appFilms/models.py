@@ -4,20 +4,35 @@ from django.db.models import SET_NULL
 class Film(models.Model):
     title = models.CharField(primary_key=True, max_length=50)
 
+    def __str__(self):
+        return self.title
+
 class Actor(models.Model):
     actorName = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.actorName
 
 class ActorFilm(models.Model):
     title = models.ForeignKey("Film", on_delete=SET_NULL, null=True)
     actorName = models.ForeignKey("Actor", on_delete=SET_NULL, null=True)
 
+    def __str__(self):
+        return "Title: " + str(self.title) + ", Actor: " + str(self.actorName)
+
 class User(models.Model):
     userName = models.CharField(primary_key=True, max_length=50)
+
+    def __str__(self):
+        return self.userName
 
 class Score(models.Model):
     filmScore = models.IntegerField()
     film = models.ForeignKey("Film", on_delete=SET_NULL, null=True)
     userName = models.ForeignKey("User", on_delete=SET_NULL, null=True)
+
+    def __str__(self):
+        return "Score: " + str(self.filmScore) + ", Film: " + str(self.film) + ", User: " + str(self.userName)
 
 '''
 class Seleccion(models.Model):
