@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from appFilms.models import Film
 
 def prueba1(request):
     return JsonResponse({})
@@ -40,6 +41,19 @@ def prueba7(request):
         p = request.GET.get('p')
         print(f"q = {q}, p = {p}")
         return JsonResponse({'q': q, 'p': p})
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+def titulo(request, title):
+    if request.method == "GET":
+        try:
+            x = Film.objects.get(title=title)
+            return JsonResponse({
+                "title": x.title
+            })
+        except Film.DoesNotExist:
+            return JsonResponse({"error": "The movie with that title has not been found"}, status=404)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
