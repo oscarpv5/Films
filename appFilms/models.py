@@ -2,13 +2,17 @@ from django.db import models
 from django.db.models import SET_NULL
 
 class Film(models.Model):
-    title = models.CharField(primary_key=True, max_length=50)
+    title = models.CharField(max_length=50)
+    synopsis = models.CharField(max_length=100, null=True)
+    year = models.IntegerField(null=True)
 
     def __str__(self):
         return self.title
 
 class Actor(models.Model):
     actorName = models.CharField(max_length=50)
+    actorLastName = models.CharField(max_length=50, null=True)
+    gender = models.CharField(max_length=30, null=True)
 
     def __str__(self):
         return self.actorName
@@ -21,7 +25,9 @@ class ActorFilm(models.Model):
         return "Title: " + str(self.title) + ", Actor: " + str(self.actorName)
 
 class User(models.Model):
-    userName = models.CharField(primary_key=True, max_length=50)
+    userId = models.CharField(primary_key=True, max_length=50)
+    userName = models.CharField(max_length=50, null=True)
+    userLastName = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.userName
