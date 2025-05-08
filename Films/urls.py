@@ -29,4 +29,6 @@ urlpatterns = [
     path('print/JSON6/<int:valor>', endpoint.prueba6),
     path('print/JSON7', endpoint.prueba7),
     path('films/<title>', endpoint.titulo),
+    path('films/', endpoint.peliculas),
+    path('actors/', endpoint.actores),
 ]

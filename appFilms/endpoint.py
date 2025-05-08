@@ -1,5 +1,6 @@
 from django.http import JsonResponse
-from appFilms.models import Film
+from appFilms.models import Film, Actor
+
 
 def prueba1(request):
     return JsonResponse({})
@@ -54,6 +55,40 @@ def titulo(request, title):
             })
         except Film.DoesNotExist:
             return JsonResponse({"error": "The movie with that title has not been found"}, status=404)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+def peliculas(request):
+    if request.method == "GET":
+        peliculas = Film.objects.all()
+        data = []
+
+        for pelicula in peliculas:
+            data.append({
+                "id": pelicula.id,
+                "title": pelicula.title,
+                "synopsis": pelicula.synopsis,
+                "year": pelicula.year
+            })
+
+        return JsonResponse(data, safe=False, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+def actores(request):
+    if request.method == "GET":
+        actores = Actor.objects.all()
+
+        data = [{
+            "id": actor.id,
+            "actorName": actor.actorName,
+            "actorLastName": actor.actorLastName,
+            "gender": actor.gender
+        } for actor in actores]
+
+        return JsonResponse(data, safe=False, status=200)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
