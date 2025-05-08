@@ -61,17 +61,22 @@ def titulo(request, title):
 
 def peliculas(request):
     if request.method == "GET":
-        peliculas = Film.objects.all()
-        data = []
 
+        s = request.GET.get("search")
+
+        if s is None:
+            peliculas = Film.objects.all()
+        else:
+            peliculas = Film.objects.filter(title__icontains=s)
+
+        data = []
         for pelicula in peliculas:
             data.append({
-                "id": pelicula.id,
-                "title": pelicula.title,
-                "synopsis": pelicula.synopsis,
-                "year": pelicula.year
+                "Id": pelicula.id,
+                "Title": pelicula.title,
+                "Synopsis": pelicula.synopsis,
+                "Year": pelicula.year
             })
-
         return JsonResponse(data, safe=False, status=200)
 
     else:
@@ -82,10 +87,10 @@ def actores(request):
         actores = Actor.objects.all()
 
         data = [{
-            "id": actor.id,
-            "actorName": actor.actorName,
-            "actorLastName": actor.actorLastName,
-            "gender": actor.gender
+            "Id": actor.id,
+            "Name": actor.actorName,
+            "Last name": actor.actorLastName,
+            "Gender": actor.gender
         } for actor in actores]
 
         return JsonResponse(data, safe=False, status=200)
