@@ -1,5 +1,8 @@
+import json
+
 from django.http import JsonResponse
 from appFilms.models import Film, Actor
+from django.views.decorators.csrf import csrf_exempt
 
 
 def prueba1(request):
@@ -94,6 +97,17 @@ def actores(request):
         } for actor in actores]
 
         return JsonResponse(data, safe=False, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+@csrf_exempt
+def usuarios(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        print(json_data)
+
+        return JsonResponse({}, status=200)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
