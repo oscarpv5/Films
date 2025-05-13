@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse
 from appFilms.models import Film, Actor
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 
 def prueba1(request):
@@ -70,7 +71,7 @@ def peliculas(request):
         if s is None:
             peliculas = Film.objects.all()
         else:
-            peliculas = Film.objects.filter(title__icontains=s)
+            peliculas = Film.objects.filter(Q(title__icontains=s) | Q(synopsis__icontains=s))
 
         data = []
         for pelicula in peliculas:
