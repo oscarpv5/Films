@@ -32,4 +32,5 @@ urlpatterns = [
     path('films/', endpoint.peliculas),
     path('actors/', endpoint.actores),
     path('users/', endpoint.usuarios),
+    path('people/', endpoint.personas),
 ]

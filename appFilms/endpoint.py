@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.http import JsonResponse
 from appFilms.models import Film, Actor
@@ -107,6 +108,30 @@ def usuarios(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         print(json_data)
+
+        return JsonResponse({}, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+@csrf_exempt
+def personas(request):
+    if request.method == "POST":
+
+        json_data = json.loads(request.body)
+
+        nombre = json_data['nombre']
+        fecha = json_data['fecha_nacimiento']
+        feliz = json_data['es_feliz']
+        clave = json_data['clave_felicidad'].lower()
+
+        formato = "%d/%m/%Y"
+        fecha_nacimiento = datetime.strptime(fecha, formato)
+
+        hoy = datetime.today()
+        edad = hoy.year - fecha_nacimiento.year
+
+        print(f"La persona se llama {nombre}, tiene {edad} años, {'es' if feliz else 'no es'} feliz. Su clave para la felicidad es {clave}")
 
         return JsonResponse({}, status=200)
 
