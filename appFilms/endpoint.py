@@ -137,3 +137,32 @@ def personas(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+@csrf_exempt
+def digimons(request):
+    if request.method == "POST":
+
+        json_data = json.loads(request.body)
+
+        print("La lista de digimons es:")
+
+        for digimon in json_data['digimons']:
+            nombre = digimon['nombre']
+            mensaje = f"El nombre es {nombre}."
+
+            if 'evoluciones' in digimon:
+                mensaje = mensaje + f" Sus evoluciones son "
+                for evolucion in digimon['evoluciones']:
+                    mensaje = mensaje + evolucion + " "
+
+            if 'evoluciones_oscuras' in digimon:
+                mensaje = mensaje + f". Sus evoluciones oscuras son "
+                for evolucion_oscuras in digimon['evoluciones_oscuras']:
+                    mensaje = mensaje + evolucion_oscuras + " "
+
+            print(mensaje)
+
+        return JsonResponse({}, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
