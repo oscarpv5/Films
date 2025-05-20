@@ -166,3 +166,23 @@ def digimons(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+@csrf_exempt
+def login(request):
+    if request.method == "POST":
+        try:
+            json_data = json.loads(request.body)
+
+            usuario = json_data["username"]
+            contrasena = json_data["password"]
+
+            print("Usuario: " + usuario)
+            print("Contraseña: " + contrasena)
+
+        except KeyError:
+            return JsonResponse({"error": "Missing user and/or password"}, status=400)
+
+        return JsonResponse({}, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)

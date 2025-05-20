@@ -34,4 +34,5 @@ urlpatterns = [
     path('users/', endpoint.usuarios),
     path('people/', endpoint.personas),
     path('digimons/', endpoint.digimons),
+    path('sessions/', endpoint.login),
 ]
