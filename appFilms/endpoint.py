@@ -155,7 +155,7 @@ def digimons(request):
                 for evolucion in digimon['evoluciones']:
                     mensaje = mensaje + evolucion + " "
 
-            if 'evoluciones_oscuras' in digimon:
+            if 'evoluciones_oscuras' in digimon and digimon["evoluciones_oscuras"] != []:
                 mensaje = mensaje + f". Sus evoluciones oscuras son "
                 for evolucion_oscuras in digimon['evoluciones_oscuras']:
                     mensaje = mensaje + evolucion_oscuras + " "
