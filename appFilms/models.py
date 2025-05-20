@@ -28,6 +28,8 @@ class User(models.Model):
     userId = models.CharField(primary_key=True, max_length=50)
     userName = models.CharField(max_length=50, null=True)
     userLastName = models.CharField(max_length=50, null=True)
+    password = models.CharField(max_length=50)
+    tokenSesion = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.userName
