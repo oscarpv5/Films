@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 from django.http import JsonResponse
-from appFilms.models import Film, Actor
+from appFilms.models import Film, Actor, User
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
@@ -173,8 +173,18 @@ def login(request):
         try:
             json_data = json.loads(request.body)
 
-            usuario = json_data["username"]
-            contrasena = json_data["password"]
+            try:
+                usuario = json_data["username"]
+                user = User.objects.get(userId = usuario)
+                contrasena = json_data["password"]
+
+                if user.password == contrasena:
+                    print("Contraseña correcta")
+                else:
+                    print("Contraseña incorrecta")
+
+            except User.DoesNotExist:
+                return JsonResponse({"error": "Not that User in database"}, status=400)
 
             print("Usuario: " + usuario)
             print("Contraseña: " + contrasena)
