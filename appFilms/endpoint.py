@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from appFilms.models import Film, Actor, User
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.db import IntegrityError
 
 
 def prueba1(request):
@@ -109,7 +110,24 @@ def usuarios(request):
         json_data = json.loads(request.body)
         print(json_data)
 
-        return JsonResponse({}, status=200)
+        try:
+
+            userId = json_data['userId']
+            userName = json_data['userName']
+            userLastName = json_data['userLastName']
+            password = json_data['password']
+
+            newUser = User.objects.create(userId = userId, userName = userName, userLastName = userLastName, password = password)
+
+            idUsuario = newUser.userId
+            nameUsuario = newUser.userName
+            lastNameUsuario = newUser.userLastName
+            contrasena = newUser.password
+
+        except IntegrityError:
+            return JsonResponse({"error": "userId already exists in DB"}, status=409)
+
+        return JsonResponse({"userId": idUsuario, "userName": nameUsuario, "userLastName": lastNameUsuario, "password": contrasena}, status=201)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
