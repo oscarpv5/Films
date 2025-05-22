@@ -111,7 +111,6 @@ def usuarios(request):
         print(json_data)
 
         try:
-
             userId = json_data['userId']
             userName = json_data['userName']
             userLastName = json_data['userLastName']
@@ -126,6 +125,8 @@ def usuarios(request):
 
         except IntegrityError:
             return JsonResponse({"error": "userId already exists in DB"}, status=409)
+        except KeyError:
+            return JsonResponse({"error": "Missing field"}, status=400)
 
         return JsonResponse({"userId": idUsuario, "userName": nameUsuario, "userLastName": lastNameUsuario, "password": contrasena}, status=201)
 
