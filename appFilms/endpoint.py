@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 from django.http import JsonResponse
-from appFilms.models import Film, Actor, User
+from appFilms.models import Film, Actor, User, ActorFilm
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.db import IntegrityError
@@ -212,6 +212,22 @@ def login(request):
             return JsonResponse({"error": "Missing user and/or password"}, status=400)
 
         return JsonResponse({}, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+def peliculaId(request, id):
+    if request.method == "GET":
+        try:
+            x = Film.objects.get(id = id)
+            y = Actor.objects.get(id = id)
+            return JsonResponse({
+                "title": x.title,
+                "actorName": y.actorName,
+                "actorLastName": y.actorLastName
+            })
+        except Film.DoesNotExist:
+            return JsonResponse({"error": "The movie with that title has not been found"}, status=404)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
