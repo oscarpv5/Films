@@ -220,12 +220,19 @@ def peliculaId(request, id):
     if request.method == "GET":
         try:
             x = Film.objects.get(id = id)
-            y = Actor.objects.get(id = id)
-            return JsonResponse({
-                "title": x.title,
-                "actorName": y.actorName,
-                "actorLastName": y.actorLastName
+            y = ActorFilm.objects.filter(title = x)
+
+            data = []
+
+            for actor in y:
+                data.append({
+                "title": str(actor.title),
+                "actorName": str(actor.actorName),
+                "actorLastName": str(actor.actorName.actorLastName)
             })
+
+            return JsonResponse(data, safe=False, status=200)
+
         except Film.DoesNotExist:
             return JsonResponse({"error": "The movie with that title has not been found"}, status=404)
 
