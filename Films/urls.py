@@ -35,5 +35,5 @@ urlpatterns = [
     path('people/', endpoint.personas),
     path('digimons/', endpoint.digimons),
     path('sessions/', endpoint.login),
-    path('peliculaId/<id>', endpoint.peliculaId),
+    path('peliculas/<id>', endpoint.peliculaId),
 ]

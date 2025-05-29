@@ -226,12 +226,11 @@ def peliculaId(request, id):
 
             for actor in y:
                 data.append({
-                "title": str(actor.title),
-                "actorName": str(actor.actorName),
-                "actorLastName": str(actor.actorName.actorLastName)
+                "Name": str(actor.actorName),
+                "LastName": str(actor.actorName.actorLastName)
             })
 
-            return JsonResponse(data, safe=False, status=200)
+            return JsonResponse({"title": str(actor.title), "actors": data}, safe=False, status=200)
 
         except Film.DoesNotExist:
             return JsonResponse({"error": "The movie with that title has not been found"}, status=404)
