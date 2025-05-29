@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import secrets
 
 from django.http import JsonResponse
 from appFilms.models import Film, Actor, User, ActorFilm
@@ -198,6 +199,10 @@ def login(request):
                 contrasena = json_data["password"]
 
                 if user.password == contrasena:
+                    token = secrets.token_hex(32)
+                    user.tokenSesion = token
+                    user.save()
+
                     print("Contraseña correcta")
                 else:
                     print("Contraseña incorrecta")
@@ -211,7 +216,7 @@ def login(request):
         except KeyError:
             return JsonResponse({"error": "Missing user and/or password"}, status=400)
 
-        return JsonResponse({}, status=200)
+        return JsonResponse({"token": token}, status=200)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
