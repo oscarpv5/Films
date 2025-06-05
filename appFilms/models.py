@@ -39,6 +39,9 @@ class Score(models.Model):
     film = models.ForeignKey("Film", on_delete=SET_NULL, null=True)
     userName = models.ForeignKey("User", on_delete=SET_NULL, null=True)
 
+    class Meta:
+        unique_together = ('film', 'userName')
+
     def __str__(self):
         return "Score: " + str(self.filmScore) + ", Film: " + str(self.film) + ", User: " + str(self.userName)
 
