@@ -3,7 +3,7 @@ from datetime import datetime
 import secrets
 
 from django.http import JsonResponse
-from appFilms.models import Film, Actor, User, ActorFilm
+from appFilms.models import Film, Actor, User, ActorFilm, Score
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.db import IntegrityError
@@ -240,5 +240,27 @@ def peliculaId(request, id):
         except Film.DoesNotExist:
             return JsonResponse({"error": "The movie with that title has not been found"}, status=404)
 
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+@csrf_exempt
+def score_pelicula(request, id):
+    if request.method == "POST":
+        t = request.headers.get('token')
+
+        if t != None:
+            user = User.objects.get(tokenSesion=t)
+            json_data = json.loads(request.body)
+
+            score = json_data.get("score")
+
+            pelicula = Film.objects.get(id=id)
+
+            Score.objects.update_or_create(userName=user, film=pelicula, defaults={"filmScore":score})
+
+            return JsonResponse({}, status=200)
+
+        else:
+            return JsonResponse({"error": "Token does not exits"}, status=401)
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
