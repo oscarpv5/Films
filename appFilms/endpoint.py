@@ -131,7 +131,7 @@ def actores(request):
 @csrf_exempt
 def usuarios(request):
     if request.method == "POST":
-        json_data = json.loads(request.body)
+        json_data = json.loads(request.body) # convierte el cuerpo de la peticion HTTP (la que se envia por CURL) en un diccionario
         print(json_data)
 
         try:
@@ -141,6 +141,7 @@ def usuarios(request):
             password = json_data['password']
 
             newUser = User.objects.create(userId = userId, userName = userName, userLastName = userLastName, password = password)
+            # crea un nuevo usuario con esos campos
 
             idUsuario = newUser.userId
             nameUsuario = newUser.userName
@@ -161,7 +162,7 @@ def usuarios(request):
 def personas(request):
     if request.method == "POST":
 
-        json_data = json.loads(request.body)
+        json_data = json.loads(request.body) # convierte el cuerpo de la peticion HTTP (la que se envia por CURL) en un diccionario
 
         nombre = json_data['nombre']
         fecha = json_data['fecha_nacimiento']
@@ -173,34 +174,45 @@ def personas(request):
 
         hoy = datetime.today()
         edad = hoy.year - fecha_nacimiento.year
+        # estas 4 lineas convierten una fecha de cumpleaños en edad
 
         print(f"La persona se llama {nombre}, tiene {edad} años, {'es' if feliz else 'no es'} feliz. Su clave para la felicidad es {clave}")
+        # empleo de extresion condicional (ternaria)
 
         return JsonResponse({}, status=200)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# curl -X POST localhost:8000/people/ -d "{\"nombre\": \"Pepe\", \"fecha_nacimiento\": \"01/10/1970\", \"es_feliz\": true,
+# \"clave_felicidad\": \"No lee el periódico, sólo libros de historias\"}"
+#
+# {
+#   "nombre": "Pepe",
+#   "fecha_nacimiento": "01/10/1970",
+#   "es_feliz": True,
+#   "clave_felicidad": "No lee el periódico, sólo libros de historias"
+# }
 
 @csrf_exempt
 def digimons(request):
     if request.method == "POST":
 
-        json_data = json.loads(request.body)
+        json_data = json.loads(request.body) # convierte el cuerpo de la peticion HTTP (la que se envia por CURL) en un diccionario
 
         print("La lista de digimons es:")
 
-        for digimon in json_data['digimons']:
-            nombre = digimon['nombre']
+        for digimon in json_data['digimons']: # entra en el array que esta dentro de digimons
+            nombre = digimon['nombre'] # coge el nombre que está dentro del array que a su vez esta dentro de digimons
             mensaje = f"El nombre es {nombre}."
 
-            if 'evoluciones' in digimon:
+            if 'evoluciones' in digimon: # coge las evoluciones que están dentro del array que a su vez estan dentro de digimons
                 mensaje = mensaje + f" Sus evoluciones son "
-                for evolucion in digimon['evoluciones']:
+                for evolucion in digimon['evoluciones']: # recorre el array de evoluciones y saca 1 a 1
                     mensaje = mensaje + evolucion + " "
 
-            if 'evoluciones_oscuras' in digimon and digimon["evoluciones_oscuras"] != []:
+            if 'evoluciones_oscuras' in digimon and digimon["evoluciones_oscuras"] != []: # coge las evoluciones-oscuras que están dentro del array que a su vez estan dentro de digimons
                 mensaje = mensaje + f". Sus evoluciones oscuras son "
-                for evolucion_oscuras in digimon['evoluciones_oscuras']:
+                for evolucion_oscuras in digimon['evoluciones_oscuras']: # recorre el array de evoluciones-oscuras y saca 1 a 1
                     mensaje = mensaje + evolucion_oscuras + " "
 
             print(mensaje)
@@ -209,22 +221,44 @@ def digimons(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# curl -X POST localhost:8000/digimons/ -d "{\"digimons\": [{\"nombre\": \"Agumon\",
+# \"evoluciones\": [\"Greymon, Metalgreymon, Wargreymon\"], \"evoluciones_oscuras\":
+# [\"Skullgreymon\"]}, {\"nombre\": \"Patamon\", \"evoluciones\": [\"Angemon\",
+# \"Magnaangemon\"], \"evoluciones_oscuras\": []},{ \"nombre\": \"Yetimon\"}]}"
+#
+# {
+#   "digimons": [
+#     {
+#       "nombre": "Agumon",
+#       "evoluciones": ["Greymon, Metalgreymon, Wargreymon"],
+#       "evoluciones_oscuras": ["Skullgreymon"]
+#     },
+#     {
+#       "nombre": "Patamon",
+#       "evoluciones": ["Angemon", "Magnaangemon"],
+#       "evoluciones_oscuras": []
+#     },
+#     {
+#       "nombre": "Yetimon"
+#     }
+#   ]
+# }
 
 @csrf_exempt
 def login(request):
     if request.method == "POST":
         try:
-            json_data = json.loads(request.body)
+            json_data = json.loads(request.body) # convierte el cuerpo de la peticion HTTP (la que se envia por CURL) en un diccionario
 
             try:
                 usuario = json_data["username"]
-                user = User.objects.get(userId = usuario)
+                user = User.objects.get(userId = usuario) # compara UserId de la base de datos con el usuario del json
                 contrasena = json_data["password"]
 
                 if user.password == contrasena:
-                    token = secrets.token_hex(32)
-                    user.tokenSesion = token
-                    user.save()
+                    token = secrets.token_hex(32) # genera un token aleatorio seguro
+                    user.tokenSesion = token # lo asigna a tokenSesion
+                    user.save() # lo guarda
 
                     print("Contraseña correcta")
                 else:
@@ -243,6 +277,12 @@ def login(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# curl -X POST localhost:8000/sessions/ -d "{\"username\": \"oscar_pv5\", \"password\": \"12345\"}"
+#
+# {
+# 	"username": "oscar_pv5",
+# 	"password": "12345",
+# }
 
 def peliculaId(request, id):
     if request.method == "GET":
@@ -273,17 +313,18 @@ def peliculaId(request, id):
 @csrf_exempt
 def score_pelicula(request, id):
     if request.method == "POST":
-        t = request.headers.get('token')
+        t = request.headers.get('token') # guarda la variable token recibida por una cabecera
 
         if t != None:
-            user = User.objects.get(tokenSesion=t)
-            json_data = json.loads(request.body)
+            user = User.objects.get(tokenSesion=t) # busca en base de datos de User el token que se pasa por la ruta
+            json_data = json.loads(request.body) # convierte el cuerpo de la peticion HTTP (la que se envia por CURL) en un diccionario
 
-            score = json_data.get("score")
+            score = json_data.get("score") # coge score dentro del json que se le pasa por la ruta
 
-            pelicula = Film.objects.get(id=id)
+            pelicula = Film.objects.get(id=id) # compara el id recibido con la base de datos
 
             Score.objects.update_or_create(userName=user, film=pelicula, defaults={"filmScore":score})
+            # crea un nuevo registro de score si no lo encuentra, si lo encuentra solo lo modifica
 
             return JsonResponse({}, status=200)
 
@@ -291,3 +332,4 @@ def score_pelicula(request, id):
             return JsonResponse({"error": "Token does not exits"}, status=401)
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# curl -X POST localhost:8000/peliculas/<id>/score/ --header "token:12345" -d "{\"score\": 7}"
