@@ -11,6 +11,8 @@ from django.db import IntegrityError
 
 def prueba1(request):
     return JsonResponse({})
+# print/JSON1
+# devuelve un json vacio
 
 def prueba2(request, valor1, valor2):
     return JsonResponse(
@@ -18,12 +20,18 @@ def prueba2(request, valor1, valor2):
             "Estado": valor1,
             "Nuevo estado": valor2
         })
+# print/<valor1>/JSON2/<valor2>
+# devuelve un json con valores que se le asignan en la ruta (numericos y string)
 
 def prueba3(request, valor):
     return JsonResponse({"Estado": valor})
+# print/JSON3/<valor>
+# devuelve un json con el valor que se le asigna en la ruta (numerico o string)
 
 def prueba4(request, valor):
     return JsonResponse({"Estado": valor})
+# print/JSON4/<int:valor>
+# devuelve un json con el valor que se le asigna en la ruta (solo numerico)
 
 def prueba5(request):
     if request.method == "GET":
@@ -33,6 +41,8 @@ def prueba5(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# print/JSON5?q=...
+# query param que devuelve un json con el valor que se le asigna en la ruta (numerico o string)
 
 def prueba6(request, valor):
     if request.method == "GET":
@@ -42,6 +52,8 @@ def prueba6(request, valor):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# print/JSON6/<int:valor> (2?q=...)
+# devuelve un json con los valores que se le asignan en la ruta (path param numerico el 1º, query param numerico o string el 2º)
 
 def prueba7(request):
     if request.method == "GET":
@@ -52,11 +64,13 @@ def prueba7(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# print/JSON7?q=...&p=...
+# query param que devuelve un json con los valores que se le asignan en la ruta (numericos o string)
 
 def titulo(request, title):
     if request.method == "GET":
         try:
-            x = Film.objects.get(title=title)
+            x = Film.objects.get(title=title) # compara el titulo recibido con la base de datos
             return JsonResponse({
                 "title": x.title
             })
@@ -65,6 +79,8 @@ def titulo(request, title):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# films/<title>
+# devuelve un json con el nombre del titulo que previamente verifica si esta en la base de datos
 
 def peliculas(request):
     if request.method == "GET":
@@ -74,11 +90,11 @@ def peliculas(request):
         if s is None:
             peliculas = Film.objects.all()
         else:
-            peliculas = Film.objects.filter(Q(title__icontains=s) | Q(synopsis__icontains=s))
+            peliculas = Film.objects.filter(Q(title__icontains=s) | Q(synopsis__icontains=s)) #sensibilidad entre mayusculas y minusculas
 
         data = []
         for pelicula in peliculas:
-            data.append({
+            data.append({ # el append agrega un diccionario a data que es un array
                 "Id": pelicula.id,
                 "Title": pelicula.title,
                 "Synopsis": pelicula.synopsis,
@@ -88,12 +104,17 @@ def peliculas(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# films/
+# devuelve un json con los campos de id, title, synopsis y year de todas las peliculas
+
+# films/?search=...
+# devuelve un json con los campos de id, title, synopsis y year en las que aparezca lo que se busca en la ruta
 
 def actores(request):
     if request.method == "GET":
         actores = Actor.objects.all()
 
-        data = [{
+        data = [{ # se agrega un diccionario a data que es un array
             "Id": actor.id,
             "Name": actor.actorName,
             "Last name": actor.actorLastName,
@@ -104,6 +125,8 @@ def actores(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+# actors/
+# devuelve un json con los campos de id, name, last name y gender de todos los actores
 
 @csrf_exempt
 def usuarios(request):
@@ -224,15 +247,15 @@ def login(request):
 def peliculaId(request, id):
     if request.method == "GET":
         try:
-            x = Film.objects.get(id = id)
-            y = ActorFilm.objects.filter(title = x)
+            x = Film.objects.get(id = id) # busca en base de datos de Film el ID que se pasa por la ruta
+            y = ActorFilm.objects.filter(title = x) # busca en BBDD de ActorFilm el titulo que tenga ese ID que se pasa por la ruta
 
             data = []
 
             for actor in y:
-                data.append({
+                data.append({ # el append agrega un diccionario a data que es un array
                 "Name": str(actor.actorName),
-                "LastName": str(actor.actorName.actorLastName)
+                "LastName": str(actor.actorName.actorLastName) # a traves de la ForeingKey
             })
 
             return JsonResponse({"title": str(actor.title), "actors": data}, safe=False, status=200)
@@ -242,6 +265,10 @@ def peliculaId(request, id):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+# peliculas/<id>
+# devuelve un json con los campos de title y actors, este ultimo es un array que tiene diccionarios con los campos de Name y LastName
+# devuelve el json a traves de un ID que se escribe en la ruta
 
 @csrf_exempt
 def score_pelicula(request, id):
