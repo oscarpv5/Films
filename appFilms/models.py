@@ -45,6 +45,13 @@ class Score(models.Model):
     def __str__(self):
         return "Score: " + str(self.filmScore) + ", Film: " + str(self.film) + ", User: " + str(self.userName)
 
+class Saga(models.Model):
+    nombre = models.CharField(max_length=50)
+    descripcion = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.nombre
+
 '''
 class Seleccion(models.Model):
     nombre = models.CharField(max_lenght=50)

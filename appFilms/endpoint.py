@@ -3,7 +3,7 @@ from datetime import datetime
 import secrets
 
 from django.http import JsonResponse
-from appFilms.models import Film, Actor, User, ActorFilm, Score
+from appFilms.models import Film, Actor, User, ActorFilm, Score, Saga
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.db import IntegrityError
@@ -333,3 +333,17 @@ def score_pelicula(request, id):
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
 # curl -X POST localhost:8000/peliculas/<id>/score/ --header "token:12345" -d "{\"score\": 7}"
+
+def sagas(request):
+    if request.method == "GET":
+        sagas = Saga.objects.all()
+
+        data = [{
+            "nombre": saga.nombre,
+            "descripcion": saga.descripcion
+        } for saga in sagas]
+
+        return JsonResponse(data, safe=False, status=200)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
