@@ -347,3 +347,26 @@ def sagas(request):
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+def usuarioPorId(request, userId):
+    if request.method == "GET":
+        try:
+            user = User.objects.get(userId=userId)
+
+            if user.tokenSesion != None:
+                a = True
+            else:
+                a = False
+
+            return JsonResponse({
+                "userId": user.userId,
+                "userName": user.userName,
+                "userLastName": user.userLastName,
+                "isLoggedIn": a
+            }, safe=False, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "The user with that userId has not been found"}, status=404)
+
+    else:
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
