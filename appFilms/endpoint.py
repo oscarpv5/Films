@@ -114,14 +114,28 @@ def actores(request):
     if request.method == "GET":
         actores = Actor.objects.all()
 
-        data = [{ # se agrega un diccionario a data que es un array
-            "Id": actor.id,
-            "Name": actor.actorName,
-            "Last name": actor.actorLastName,
-            "Gender": actor.gender
-        } for actor in actores]
+#        t = request.headers.get('token')
+#        if t != None:
 
-        return JsonResponse(data, safe=False, status=200)
+        inScoredFilms = request.GET.get('inScoredFilms')
+
+        if inScoredFilms == 'true':
+            return JsonResponse({})
+            # aquí se comprobaría que el score está otorgado a una pelicula e imprimiria
+            # el id, name, last name y gender de los actores que participan en dicha pelicula.
+            # Esto se comprobaría con el uso de las ForeignKey
+        else:
+            data = [{
+                "Id": actor.id,
+                "Name": actor.actorName,
+                "Last name": actor.actorLastName,
+                "Gender": actor.gender
+            } for actor in actores]
+
+            return JsonResponse(data, safe=False, status=200)
+
+#        else:
+#            return JsonResponse({"error": "Token does not exits"}, status=401)
 
     else:
         return JsonResponse({"error": "HTTP method not supported"}, status=405)
